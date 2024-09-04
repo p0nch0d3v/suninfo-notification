@@ -1,33 +1,15 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
 	"log"
-	"net/http"
 	"os"
+	"strconv"
+	"sunrise-sunset-notification/settings"
+	"time"
+
+	suninfo "sunrise-sunset-notification/sun_info"
 )
-
-type SunrisSsunsetInfo struct {
-	Date        string
-	Sunrise     string
-	Sunset      string
-	FirstLight  string
-	LastLight   string
-	Dawn        string
-	Dusk        string
-	SolarNoon  string
-	GoldenHour string
-	DayLength  string
-	Timezone    string
-	UtcOffset  int
-}
-
-type SunrisSsunsetResult struct {
-	Results SunrisSsunsetInfo
-	Status  string
-}
 
 func main() {
 	fmt.Println("main")
@@ -38,25 +20,17 @@ func main() {
 
 		fmt.Println(latitude, longitude, phoneNumber)
 
-		get_sunrise_sunset_info(latitude, longitude)
-	}
-}
+		utc_offset, _ := strconv.ParseInt(settings.GetSetting("UTC_HOUR_OFFSET"), 10, 64)
 
-func get_sunrise_sunset_info(latitude string, longitude string) {
-	resp, err := http.Get(fmt.Sprintf("https://api.sunrisesunset.io/json?lat=%s&lng=%s", latitude, longitude))
-	if err != nil {
-		log.Fatalln(err)
-	}
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatalln(err)
-	}
+		parsed_utc_offset, _ := time.ParseDuration(fmt.Sprintf("%dh", utc_offset))
 
-  var results SunrisSsunsetResult
-	err = json.Unmarshal(body, &results)
-	if err != nil {
-		log.Fatalln(err)
+		sunset, twilight_end := suninfo.Get_sunrise_sunset_info(latitude, longitude)
+		log.Println(sunset, twilight_end)
+
+		parsed_sunset, _ := time.Parse("3:04:05 PM", sunset)
+		fmt.Println(parsed_sunset.Add(parsed_utc_offset))
+
+		parsed_twilight_end, _ := time.Parse("3:04:05 PM", twilight_end)
+		fmt.Println(parsed_twilight_end.Add(parsed_utc_offset))
 	}
-	log.Println(results.Results.Sunset)
-  log.Println(results.Results.Dusk)
 }
