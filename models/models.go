@@ -28,4 +28,5 @@ type LogItem struct {
 	Id          string
 	Sunset      string
 	TwilightEnd string
+	Message     string
 }

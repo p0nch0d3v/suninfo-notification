@@ -33,9 +33,7 @@ func Init() {
 	db = getConnection()
 	var err error
 
-	log.Println("CREATE")
-
-	_, err = db.Exec("CREATE TABLE IF NOT EXISTS Log (Id NVARCHAR(10) PRIMARY KEY, Sunset NVARCHAR(11), TwilightEnd NVARCHAR(11));")
+	_, err = db.Exec("CREATE TABLE IF NOT EXISTS Log (Id NVARCHAR(10) PRIMARY KEY, Sunset NVARCHAR(11), TwilightEnd NVARCHAR(11), Message NVARCHAR(50));")
 
 	if err != nil {
 		log.Fatalln(err)
@@ -45,20 +43,20 @@ func Init() {
 
 func IsDateAlreadyAdded(date string) bool {
 	row := db.QueryRow(`
-    SELECT Id, Sunset, TwilightEnd 
+    SELECT Id, Sunset, TwilightEnd, Message 
     FROM Log 
     WHERE Id=?`, date)
 
 	if row != nil && row.Err() == nil {
 		i := models.LogItem{}
-		err := row.Scan(&i.Id, &i.Sunset, &i.TwilightEnd)
+		err := row.Scan(&i.Id, &i.Sunset, &i.TwilightEnd, &i.Message)
 		return err == nil || len(i.Id) > 0
 	}
 	return false
 }
 
-func AddSunInfo(date string, sunset string, twilightEnd string) bool {
-	result, err := db.Exec(fmt.Sprintf(`INSERT INTO log (Id, Sunset, TwilightEnd) VALUES ('%s', '%s', '%s');`, date, sunset, twilightEnd))
+func AddSunInfo(date string, sunset string, twilightEnd string, message string) bool {
+	result, err := db.Exec(fmt.Sprintf(`INSERT INTO log (Id, Sunset, TwilightEnd, Message) VALUES ('%s', '%s', '%s', '%s');`, date, sunset, twilightEnd, message))
 	if err != nil {
 		log.Fatalln(err)
 		panic(err)
@@ -80,7 +78,7 @@ func GetAllLog() []models.LogItem {
 	data := []models.LogItem{}
 	for rows.Next() {
 		i := models.LogItem{}
-		err = rows.Scan(&i.Id, &i.Sunset, &i.TwilightEnd)
+		err = rows.Scan(&i.Id, &i.Sunset, &i.TwilightEnd, &i.Message)
 		if err != nil {
 			log.Fatalln(err)
 			panic(err)
