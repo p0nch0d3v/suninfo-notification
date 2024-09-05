@@ -4,11 +4,9 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
 	"sunrise-sunset-notification/settings"
+	sunInfo "sunrise-sunset-notification/sun_info"
 	"time"
-
-	suninfo "sunrise-sunset-notification/sun_info"
 )
 
 func main() {
@@ -20,17 +18,24 @@ func main() {
 
 		fmt.Println(latitude, longitude, phoneNumber)
 
-		utcOffset, _ := strconv.ParseInt(settings.GetSetting("UTC_HOUR_OFFSET"), 10, 64)
-
-		parsedUtcOffset, _ := time.ParseDuration(fmt.Sprintf("%dh", utcOffset))
-
-		sunset, twilightEnd := suninfo.GetSunriseSunsetInfo(latitude, longitude)
-		log.Println(sunset, twilightEnd)
-
-		parsedSunset, _ := time.Parse("3:04:05 PM", sunset)
-		fmt.Println(parsedSunset.Add(parsedUtcOffset))
-
-		parsedTwilightEnd, _ := time.Parse("3:04:05 PM", twilightEnd)
-		fmt.Println(parsedTwilightEnd.Add(parsedUtcOffset))
+		sunset, twilightEnd := sunInfo.GetSunriseSunsetInfo(latitude, longitude)
+		message := formatMessage(sunset, twilightEnd)
+		log.Println(message)
 	}
+}
+
+func formatMessage(sunset string, twilightEnd string) string {
+	var timeFormat string = "3:04:05 PM"
+	utcOffset := settings.GetUtcHourOffset()
+	parsedUtcOffset, _ := time.ParseDuration(fmt.Sprintf("%dh", utcOffset))
+
+	parsedSunset, _ := time.Parse(timeFormat, sunset)
+	parsedSunset = parsedSunset.Add(parsedUtcOffset)
+
+	parsedTwilightEnd, _ := time.Parse(timeFormat, twilightEnd)
+	parsedTwilightEnd = parsedTwilightEnd.Add(parsedUtcOffset)
+
+	message := fmt.Sprintf("%s -> %s", parsedSunset.Format(timeFormat), parsedTwilightEnd.Format(timeFormat))
+
+	return message
 }

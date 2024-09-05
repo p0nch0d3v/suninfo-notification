@@ -6,11 +6,12 @@ import (
 	"os"
 	"regexp"
 	"slices"
+	"strconv"
 	"strings"
 	"sunrise-sunset-notification/models"
 )
 
-func GetSetting(key string) string {
+func getSetting(key string) string {
 	readedConfigs, err := readEnvFile("./.env")
 	if err != nil {
 		log.Println("")
@@ -56,4 +57,17 @@ func getConfigValue(configs []models.EnvConfigItem, key string) string {
 		return configs[idx].Value
 	}
 	return ""
+}
+
+func GetUtcHourOffset() int64 {
+	utcHourOffsetEnvValue := getSetting("UTC_HOUR_OFFSET")
+	utcOffset, _ := strconv.ParseInt(utcHourOffsetEnvValue, 10, 64)
+	return utcOffset
+}
+
+func GetTwilioSettings() (string, string, string) {
+	accountSid := getSetting("TWILIO_ACCOUNT_SID")
+	authToken := getSetting("TWILIO_AUTH_TOKEN")
+	fromNumber := getSetting("TWILIO_AUTH_FROM_NUMBER")
+	return accountSid, authToken, fromNumber
 }

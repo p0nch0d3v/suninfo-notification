@@ -9,7 +9,7 @@ import (
 )
 
 func SendNotification(message string, toPhoneNumber string) {
-	accountSid, authToken, fromNumber := getTwilioSettings()
+	accountSid, authToken, fromNumber := settings.GetTwilioSettings()
 
 	client := twilio.NewRestClientWithParams(twilio.ClientParams{
 		Username: accountSid,
@@ -28,11 +28,4 @@ func SendNotification(message string, toPhoneNumber string) {
 		response, _ := json.Marshal(*resp)
 		fmt.Println("Response: " + string(response))
 	}
-}
-
-func getTwilioSettings() (string, string, string) {
-	accountSid := settings.GetSetting("TWILIO_ACCOUNT_SID")
-	authToken := settings.GetSetting("TWILIO_AUTH_TOKEN")
-	fromNumber := settings.GetSetting("TWILIO_AUTH_FROM_NUMBER")
-	return accountSid, authToken, fromNumber
 }

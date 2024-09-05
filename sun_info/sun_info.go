@@ -1,4 +1,4 @@
-package suninfo
+package sunInfo
 
 import (
 	"encoding/json"
