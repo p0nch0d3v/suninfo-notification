@@ -23,3 +23,9 @@ type EnvConfigItem struct {
 	Key   string
 	Value string
 }
+
+type LogItem struct {
+	Id          string
+	Sunset      string
+	TwilightEnd string
+}

@@ -6,6 +6,7 @@ import (
 	"sunrise-sunset-notification/settings"
 
 	"github.com/twilio/twilio-go"
+	twilioApi "github.com/twilio/twilio-go/rest/api/v2010"
 )
 
 func SendNotification(message string, toPhoneNumber string) {
