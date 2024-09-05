@@ -20,17 +20,17 @@ func main() {
 
 		fmt.Println(latitude, longitude, phoneNumber)
 
-		utc_offset, _ := strconv.ParseInt(settings.GetSetting("UTC_HOUR_OFFSET"), 10, 64)
+		utcOffset, _ := strconv.ParseInt(settings.GetSetting("UTC_HOUR_OFFSET"), 10, 64)
 
-		parsed_utc_offset, _ := time.ParseDuration(fmt.Sprintf("%dh", utc_offset))
+		parsedUtcOffset, _ := time.ParseDuration(fmt.Sprintf("%dh", utcOffset))
 
-		sunset, twilight_end := suninfo.Get_sunrise_sunset_info(latitude, longitude)
-		log.Println(sunset, twilight_end)
+		sunset, twilightEnd := suninfo.GetSunriseSunsetInfo(latitude, longitude)
+		log.Println(sunset, twilightEnd)
 
-		parsed_sunset, _ := time.Parse("3:04:05 PM", sunset)
-		fmt.Println(parsed_sunset.Add(parsed_utc_offset))
+		parsedSunset, _ := time.Parse("3:04:05 PM", sunset)
+		fmt.Println(parsedSunset.Add(parsedUtcOffset))
 
-		parsed_twilight_end, _ := time.Parse("3:04:05 PM", twilight_end)
-		fmt.Println(parsed_twilight_end.Add(parsed_utc_offset))
+		parsedTwilightEnd, _ := time.Parse("3:04:05 PM", twilightEnd)
+		fmt.Println(parsedTwilightEnd.Add(parsedUtcOffset))
 	}
 }

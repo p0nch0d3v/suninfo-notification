@@ -1,37 +1,31 @@
 package settings
 
 import (
-  "log"
-  "os"
-  "regexp"
-  "bufio"
-  "slices"
-  "strings"
+	"bufio"
+	"log"
+	"os"
+	"regexp"
+	"slices"
+	"strings"
+	"sunrise-sunset-notification/models"
 )
 
-type EnvConfigItem struct {
-	Key   string
-	Value string
-}
-
 func GetSetting(key string) string {
-  readedConfigs, err := readEnvFile("./.env")
-  if err != nil {
-    log.Println("")
-   }
-
-  value := getConfigValue(readedConfigs, key)
-
-  return value
+	readedConfigs, err := readEnvFile("./.env")
+	if err != nil {
+		log.Println("")
+	}
+	value := getConfigValue(readedConfigs, key)
+	return value
 }
 
-func readEnvFile(filePath string) ([]EnvConfigItem, error) {
+func readEnvFile(filePath string) ([]models.EnvConfigItem, error) {
 	readFile, err := os.Open(filePath)
-	// common.CheckError(err, "readEnvFile")
-  if err != nil {
-    log.Println(err)
-    os.Exit(0)
-  }
+
+	if err != nil {
+		log.Fatalln(err)
+		os.Exit(0)
+	}
 
 	fileScanner := bufio.NewScanner(readFile)
 	fileScanner.Split(bufio.ScanLines)
@@ -40,24 +34,24 @@ func readEnvFile(filePath string) ([]EnvConfigItem, error) {
 	for fileScanner.Scan() {
 		fileLines = append(fileLines, fileScanner.Text())
 	}
-
 	readFile.Close()
 
-	configs := []EnvConfigItem{}
-
+	configs := []models.EnvConfigItem{}
 	var re = regexp.MustCompile(`(?mi)^(?P<key>\w+)(\=+)(?P<value>.*)$`)
 
 	for _, line := range fileLines {
 		matches := re.FindAllStringSubmatch(line, -1)
 		if len(matches) == 1 && len(matches[0]) > 0 {
-			configs = append(configs, EnvConfigItem{Key: matches[0][1], Value: matches[0][3]})
+			configs = append(configs, models.EnvConfigItem{Key: matches[0][1], Value: matches[0][3]})
 		}
 	}
 	return configs, err
 }
 
-func getConfigValue(configs []EnvConfigItem, key string) string {
-	idx := slices.IndexFunc(configs, func(c EnvConfigItem) bool { return strings.ToLower(c.Key) == strings.ToLower(key) })
+func getConfigValue(configs []models.EnvConfigItem, key string) string {
+	idx := slices.IndexFunc(configs, func(c models.EnvConfigItem) bool {
+		return strings.EqualFold(c.Key, key)
+	})
 	if idx > -1 {
 		return configs[idx].Value
 	}

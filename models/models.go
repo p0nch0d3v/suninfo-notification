@@ -18,3 +18,8 @@ type SunrisSsunsetResult struct {
 	Status  string
 	TzId    string
 }
+
+type EnvConfigItem struct {
+	Key   string
+	Value string
+}

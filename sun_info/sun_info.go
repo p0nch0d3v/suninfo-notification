@@ -9,7 +9,7 @@ import (
 	"sunrise-sunset-notification/models"
 )
 
-func Get_sunrise_sunset_info(latitude string, longitude string) (string, string) {
+func GetSunriseSunsetInfo(latitude string, longitude string) (string, string) {
 	url := fmt.Sprintf("https://api.sunrise-sunset.org/json?lat=%s&lng=%s", latitude, longitude)
 
 	resp, err := http.Get(url)
