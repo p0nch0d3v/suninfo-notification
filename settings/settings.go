@@ -12,11 +12,19 @@ import (
 )
 
 func getSetting(key string) string {
-	readedConfigs, err := readEnvFile("./.env")
-	if err != nil {
-		log.Println(err.Error())
+	value := os.Getenv(key)
+	// No environment value
+	if len(strings.Trim(value, " ")) == 0 {
+		// Try with local env file
+		readedConfigs, err := readEnvFile("./.env.local")
+		if err != nil || len(readedConfigs) == 0 {
+			// Try with env file
+			readedConfigs, err = readEnvFile("./.env")
+			if err == nil || len(readedConfigs) > 0 {
+				value = getConfigValue(readedConfigs, key)
+			}
+		}
 	}
-	value := getConfigValue(readedConfigs, key)
 	return value
 }
 
@@ -25,7 +33,7 @@ func readEnvFile(filePath string) ([]models.EnvConfigItem, error) {
 
 	if err != nil {
 		log.Fatalln(err)
-		os.Exit(0)
+		return []models.EnvConfigItem{}, err
 	}
 
 	fileScanner := bufio.NewScanner(readFile)
@@ -56,7 +64,7 @@ func getConfigValue(configs []models.EnvConfigItem, key string) string {
 	if idx > -1 {
 		return configs[idx].Value
 	}
-	return ""
+	return os.Getenv(key)
 }
 
 func GetUtcHourOffset() int64 {
@@ -70,4 +78,19 @@ func GetTwilioSettings() (string, string, string) {
 	authToken := getSetting("TWILIO_AUTH_TOKEN")
 	fromNumber := getSetting("TWILIO_AUTH_FROM_NUMBER")
 	return accountSid, authToken, fromNumber
+}
+
+func EnsureEnvValues() {
+	if !ensureEnvValue("UTC_HOUR_OFFSET") || !ensureEnvValue("TWILIO_ACCOUNT_SID") || !ensureEnvValue("TWILIO_AUTH_TOKEN") || !ensureEnvValue("TWILIO_AUTH_FROM_NUMBER") {
+		os.Exit(1)
+	}
+}
+
+func ensureEnvValue(key string) bool {
+	value := getSetting(key)
+	if len(value) == 0 {
+		log.Printf("Missing Env Value [%s]", key)
+		return false
+	}
+	return true
 }

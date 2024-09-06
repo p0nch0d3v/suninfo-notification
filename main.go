@@ -12,6 +12,7 @@ import (
 )
 
 func main() {
+	settings.EnsureEnvValues()
 	if len(os.Args) >= 4 {
 		var currentDate time.Time = time.Now().UTC()
 		var currentDateFormat string = currentDate.Format("2006/01/02")
