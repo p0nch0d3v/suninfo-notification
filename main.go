@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"sunrise-sunset-notification/db"
-	"sunrise-sunset-notification/notification"
-	"sunrise-sunset-notification/settings"
-	sunInfo "sunrise-sunset-notification/sun_info"
+	"suninfo-notification/db"
+	"suninfo-notification/notification"
+	"suninfo-notification/settings"
+	sunInfo "suninfo-notification/sun_info"
 	"time"
 )
 
@@ -37,6 +37,8 @@ func main() {
 					db.AddSunInfo(currentDateFormat, sunset, twilightEnd, message)
 				}
 				os.Exit(0)
+			} else {
+				log.Println("Not able to send yet")
 			}
 
 		} else {

@@ -6,11 +6,12 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"sunrise-sunset-notification/models"
+	"suninfo-notification/models"
 )
 
 func GetSunriseSunsetInfo(latitude string, longitude string) (string, string) {
 	url := fmt.Sprintf("https://api.sunrise-sunset.org/json?lat=%s&lng=%s", latitude, longitude)
+	log.Println(url)
 
 	resp, err := http.Get(url)
 	if err != nil {

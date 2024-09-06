@@ -1,4 +1,4 @@
-module sunrise-sunset-notification
+module suninfo-notification
 
 go 1.23.0
 

@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"sunrise-sunset-notification/models"
+	"suninfo-notification/models"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -30,14 +30,15 @@ func getConnection() *sql.DB {
 }
 
 func Init() {
+	log.Println("DB - Init")
 	db = getConnection()
 	var err error
 
 	_, err = db.Exec("CREATE TABLE IF NOT EXISTS Log (Id NVARCHAR(10) PRIMARY KEY, Sunset NVARCHAR(11), TwilightEnd NVARCHAR(11), Message NVARCHAR(50));")
 
 	if err != nil {
-		log.Fatalln(err)
-		panic(err)
+		log.Fatalln(err.Error())
+		panic(err.Error())
 	}
 }
 

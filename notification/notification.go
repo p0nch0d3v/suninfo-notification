@@ -3,7 +3,7 @@ package notification
 import (
 	"encoding/json"
 	"fmt"
-	"sunrise-sunset-notification/settings"
+	"suninfo-notification/settings"
 
 	"github.com/twilio/twilio-go"
 	twilioApi "github.com/twilio/twilio-go/rest/api/v2010"

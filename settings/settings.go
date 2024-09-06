@@ -8,13 +8,13 @@ import (
 	"slices"
 	"strconv"
 	"strings"
-	"sunrise-sunset-notification/models"
+	"suninfo-notification/models"
 )
 
 func getSetting(key string) string {
 	readedConfigs, err := readEnvFile("./.env")
 	if err != nil {
-		log.Println("")
+		log.Println(err.Error())
 	}
 	value := getConfigValue(readedConfigs, key)
 	return value
