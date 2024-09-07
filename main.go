@@ -13,7 +13,6 @@ import (
 )
 
 func main() {
-	log.Println("Init")
 	settings.EnsureEnvValues()
 	db.Init()
 
