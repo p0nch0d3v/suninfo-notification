@@ -13,11 +13,17 @@ import (
 
 func main() {
 	settings.EnsureEnvValues()
+	db.Init()
+
+	if len(os.Args) == 2 {
+		if os.Args[1] == "list" {
+			db.PrintListAll()
+		}
+		os.Exit(0)
+	}
 	if len(os.Args) >= 4 {
 		var currentDate time.Time = time.Now().UTC()
 		var currentDateFormat string = currentDate.Format("2006/01/02")
-
-		db.Init()
 
 		var isDateAlreadyAdded bool = db.IsDateAlreadyAdded(currentDateFormat)
 		if !isDateAlreadyAdded {

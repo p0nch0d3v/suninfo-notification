@@ -89,3 +89,11 @@ func GetAllLog() []models.LogItem {
 
 	return data
 }
+
+func PrintListAll() {
+	data := GetAllLog()
+	log.Println(len(data))
+	for _, item := range data {
+		log.Printf("%s - %s - %s, -%s", item.Id, item.Sunset, item.TwilightEnd, item.TwilightEnd)
+	}
+}
