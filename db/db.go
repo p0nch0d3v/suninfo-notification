@@ -9,7 +9,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-const fileName string = "log.db"
+const fileName string = "data/log.db"
 
 var db *sql.DB
 

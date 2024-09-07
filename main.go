@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"suninfo-notification/db"
+	"suninfo-notification/helpers"
 	"suninfo-notification/notification"
 	"suninfo-notification/settings"
 	sunInfo "suninfo-notification/sun_info"
@@ -30,9 +30,9 @@ func main() {
 
 			sunset, twilightEnd = sunInfo.GetSunriseSunsetInfo(latitude, longitude)
 
-			if isTimeToSend(currentDate, currentDateFormat, sunset, twilightEnd) {
+			if helpers.IsTimeInThreshold(currentDate, currentDateFormat, sunset, twilightEnd) {
 
-				var message string = formatMessage(currentDateFormat, sunset, twilightEnd)
+				var message string = helpers.FormatMessage(currentDateFormat, sunset, twilightEnd)
 
 				if notification.SendNotification(message, phoneNumber) {
 					db.AddSunInfo(currentDateFormat, sunset, twilightEnd, message)
@@ -49,27 +49,4 @@ func main() {
 		log.Fatal("Not enough parameters, [ latitude, longitude and phoneNumber are expected]")
 		panic(1)
 	}
-}
-
-func formatMessage(date string, sunset string, twilightEnd string) string {
-	var timeFormat string = "3:04:05 PM"
-	utcOffset := settings.GetUtcHourOffset()
-	parsedUtcOffset, _ := time.ParseDuration(fmt.Sprintf("%dh", utcOffset))
-
-	parsedSunset, _ := time.Parse(timeFormat, sunset)
-	parsedSunset = parsedSunset.Add(parsedUtcOffset)
-
-	parsedTwilightEnd, _ := time.Parse(timeFormat, twilightEnd)
-	parsedTwilightEnd = parsedTwilightEnd.Add(parsedUtcOffset)
-
-	message := fmt.Sprintf("%s - %s -> %s", date, parsedSunset.Format(timeFormat), parsedTwilightEnd.Format(timeFormat))
-
-	return message
-}
-
-func isTimeToSend(dateTime time.Time, date string, sunset string, twilightEnd string) bool {
-	parsedSunset, _ := time.Parse("2006/01/02 3:04:05 PM", fmt.Sprintf(`%s %s`, date, sunset))
-	parsedTwilightEnd, _ := time.Parse("2006/01/02 3:04:05 PM", fmt.Sprintf(`%s %s`, date, twilightEnd))
-
-	return dateTime.After(parsedSunset) && dateTime.Before(parsedTwilightEnd)
 }

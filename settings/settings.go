@@ -16,14 +16,20 @@ func getSetting(key string) string {
 	// No environment value
 	if len(strings.Trim(value, " ")) == 0 {
 		// Try with local env file
-		readedConfigs, err := readEnvFile("./.env.local")
+		readedConfigs, err := readEnvFile(".env.local")
+
+		if err == nil || len(readedConfigs) > 0 {
+			value = getConfigValue(readedConfigs, key)
+		}
+
 		if err != nil || len(readedConfigs) == 0 {
 			// Try with env file
-			readedConfigs, err = readEnvFile("./.env")
+			readedConfigs, err = readEnvFile(".env")
 			if err == nil || len(readedConfigs) > 0 {
 				value = getConfigValue(readedConfigs, key)
 			}
 		}
+
 	}
 	return value
 }
@@ -32,7 +38,7 @@ func readEnvFile(filePath string) ([]models.EnvConfigItem, error) {
 	readFile, err := os.Open(filePath)
 
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 		return []models.EnvConfigItem{}, err
 	}
 
@@ -73,11 +79,13 @@ func GetUtcHourOffset() int64 {
 	return utcOffset
 }
 
-func GetTwilioSettings() (string, string, string) {
+func GetTwilioSettings() (string, string, string, bool) {
 	accountSid := getSetting("TWILIO_ACCOUNT_SID")
 	authToken := getSetting("TWILIO_AUTH_TOKEN")
 	fromNumber := getSetting("TWILIO_AUTH_FROM_NUMBER")
-	return accountSid, authToken, fromNumber
+	byPassTwilio, _ := strconv.ParseBool(getSetting("TWILIO_BYPASS"))
+
+	return accountSid, authToken, fromNumber, byPassTwilio
 }
 
 func EnsureEnvValues() {
