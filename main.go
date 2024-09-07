@@ -1,10 +1,11 @@
 package main
 
 import (
-	"log"
 	"os"
 	"suninfo-notification/db"
 	"suninfo-notification/helpers"
+
+	"suninfo-notification/log"
 	"suninfo-notification/notification"
 	"suninfo-notification/settings"
 	sunInfo "suninfo-notification/sun_info"
@@ -12,6 +13,7 @@ import (
 )
 
 func main() {
+	log.Println("Init")
 	settings.EnsureEnvValues()
 	db.Init()
 
@@ -52,7 +54,7 @@ func main() {
 			log.Printf(`The date [%s] is already processed`, currentDateFormat)
 		}
 	} else {
-		log.Fatal("Not enough parameters, [ latitude, longitude and phoneNumber are expected]")
+		log.FatalStr("Not enough parameters, [ latitude, longitude and phoneNumber are expected]")
 		panic(1)
 	}
 }

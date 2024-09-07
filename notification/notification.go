@@ -3,7 +3,7 @@ package notification
 import (
 	"encoding/json"
 	"fmt"
-	"log"
+	"suninfo-notification/log"
 	"suninfo-notification/settings"
 
 	"github.com/twilio/twilio-go"
@@ -33,6 +33,6 @@ func SendNotification(message string, toPhoneNumber string) bool {
 			return true
 		}
 	}
-	log.Println(byPassTwilio)
+	log.Printf("%t", byPassTwilio)
 	return byPassTwilio
 }

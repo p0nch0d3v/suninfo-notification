@@ -1,4 +1,5 @@
 .tool-versions
-log.db
 .env.local
 suninfo-notification
+data/database.db
+log/app_log.txt

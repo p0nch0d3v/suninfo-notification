@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
+	"suninfo-notification/log"
 	"suninfo-notification/models"
 )
 
@@ -15,17 +15,17 @@ func GetSunriseSunsetInfo(latitude string, longitude string) (string, string) {
 
 	resp, err := http.Get(url)
 	if err != nil {
-		log.Fatalln(err)
+		log.FatalErr(err)
 	}
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatalln(err)
+		log.FatalErr(err)
 	}
 
 	var results models.SunrisSsunsetResult
 	err = json.Unmarshal(body, &results)
 	if err != nil {
-		log.Fatalln(err)
+		log.FatalErr(err)
 	}
 
 	return results.Results.Sunset, results.Results.CivilTwilightEnd

@@ -2,12 +2,12 @@ package settings
 
 import (
 	"bufio"
-	"log"
 	"os"
 	"regexp"
 	"slices"
 	"strconv"
 	"strings"
+	"suninfo-notification/log"
 	"suninfo-notification/models"
 )
 
@@ -38,7 +38,7 @@ func readEnvFile(filePath string) ([]models.EnvConfigItem, error) {
 	readFile, err := os.Open(filePath)
 
 	if err != nil {
-		log.Println(err)
+		log.FatalErr(err)
 		return []models.EnvConfigItem{}, err
 	}
 
