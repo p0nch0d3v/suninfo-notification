@@ -1,3 +1,4 @@
 .tool-versions
 log.db
 .env.local
+suninfo-notification
