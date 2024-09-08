@@ -14,7 +14,7 @@ import (
 func getSetting(key string) string {
 	value := os.Getenv(key)
 	// No environment value
-	if len(strings.Trim(value, " ")) == 0 {
+	if len(value) == 0 {
 		// Try with local env file
 		readedConfigs, err := readEnvFile(".env.local")
 
