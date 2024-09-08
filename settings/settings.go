@@ -14,7 +14,7 @@ import (
 func getSetting(key string) string {
 	value := os.Getenv(key)
 	// No environment value
-	if len(strings.Trim(value, " ")) == 0 {
+	if len(value) == 0 {
 		// Try with local env file
 		readedConfigs, err := readEnvFile(".env.local")
 
@@ -86,6 +86,12 @@ func GetTwilioSettings() (string, string, string, bool) {
 	byPassTwilio, _ := strconv.ParseBool(getSetting("TWILIO_BYPASS"))
 
 	return accountSid, authToken, fromNumber, byPassTwilio
+}
+
+func GetNotifyBeforeInMinutes() int64 {
+	minutesValue := getSetting("NOTIFY_BEFORE_IN_MINUTES")
+	minutes, _ := strconv.ParseInt(minutesValue, 10, 64)
+	return minutes
 }
 
 func EnsureEnvValues() {
