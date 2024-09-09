@@ -22,7 +22,7 @@ func getConnection() *sql.DB {
 	db, err = sql.Open("sqlite3", fileName)
 
 	if err != nil {
-		log.FatalErr(err)
+		log.FatalErr(err, true)
 		panic(err)
 	}
 
@@ -35,8 +35,7 @@ func Init() {
 	_, err = db.Exec("CREATE TABLE IF NOT EXISTS Log (Id NVARCHAR(10) PRIMARY KEY, Sunset NVARCHAR(11), TwilightEnd NVARCHAR(11), Message NVARCHAR(50));")
 
 	if err != nil {
-		log.FatalErr(err)
-		panic(err.Error())
+		log.FatalErr(err, true)
 	}
 }
 
@@ -57,8 +56,7 @@ func IsDateAlreadyAdded(date string) bool {
 func AddSunInfo(date string, sunset string, twilightEnd string, message string) bool {
 	result, err := db.Exec(fmt.Sprintf(`INSERT INTO log (Id, Sunset, TwilightEnd, Message) VALUES ('%s', '%s', '%s', '%s');`, date, sunset, twilightEnd, message))
 	if err != nil {
-		log.FatalErr(err)
-		panic(err)
+		log.FatalErr(err, true)
 	}
 	rowsAffected, _ := result.RowsAffected()
 	lastInsertId, _ := result.LastInsertId()
@@ -69,8 +67,7 @@ func GetAllLog() []models.LogItem {
 	rows, err := db.Query("SELECT * FROM log;")
 
 	if err != nil {
-		log.FatalErr(err)
-		panic(err)
+		log.FatalErr(err, true)
 	}
 
 	defer rows.Close()
@@ -79,8 +76,7 @@ func GetAllLog() []models.LogItem {
 		i := models.LogItem{}
 		err = rows.Scan(&i.Id, &i.Sunset, &i.TwilightEnd, &i.Message)
 		if err != nil {
-			log.FatalErr(err)
-			panic(err)
+			log.FatalErr(err, true)
 		}
 		data = append(data, i)
 	}

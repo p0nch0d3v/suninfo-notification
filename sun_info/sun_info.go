@@ -14,17 +14,17 @@ func GetSunriseSunsetInfo(latitude string, longitude string) (string, string) {
 
 	resp, err := http.Get(url)
 	if err != nil {
-		log.FatalErr(err)
+		log.FatalErr(err, true)
 	}
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		log.FatalErr(err)
+		log.FatalErr(err, true)
 	}
 
 	var results models.SunrisSsunsetResult
 	err = json.Unmarshal(body, &results)
 	if err != nil {
-		log.FatalErr(err)
+		log.FatalErr(err, true)
 	}
 
 	return results.Results.Sunset, results.Results.CivilTwilightEnd

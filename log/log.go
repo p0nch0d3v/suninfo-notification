@@ -23,9 +23,11 @@ func FatalStr(input string) {
 	os.Exit(1)
 }
 
-func FatalErr(err error) {
+func FatalErr(err error, exit bool) {
 	Println(err.Error())
-	os.Exit(1)
+	if exit {
+		panic(err.Error())
+	}
 }
 
 func Printf(format string, v ...any) {

@@ -38,7 +38,7 @@ func readEnvFile(filePath string) ([]models.EnvConfigItem, error) {
 	readFile, err := os.Open(filePath)
 
 	if err != nil {
-		log.FatalErr(err)
+		log.FatalErr(err, false)
 		return []models.EnvConfigItem{}, err
 	}
 
