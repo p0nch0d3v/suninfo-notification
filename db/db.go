@@ -88,6 +88,6 @@ func PrintListAll() {
 	data := GetAllLog()
 	log.Printf("%d", len(data))
 	for _, item := range data {
-		log.Printf("%s - %s - %s, -%s", item.Id, item.Sunset, item.TwilightEnd, item.TwilightEnd)
+		log.Printf("%s | %s | %s | %s", item.Id, item.Sunset, item.TwilightEnd, item.TwilightEnd)
 	}
 }
